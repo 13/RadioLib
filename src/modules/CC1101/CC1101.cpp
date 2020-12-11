@@ -800,8 +800,8 @@ uint8_t CC1101::random() {
 
 int16_t CC1101::getChipVersion() {
   //return(SPIgetRegValue(CC1101_REG_VERSION));
-  //return(_mod->SPIgetRegValue(CC1101_REG_VERSION));
-  return(SPIreadRegister(CC1101_REG_VERSION));
+  return(_mod->SPIgetRegValue(CC1101_REG_VERSION));
+  //return(SPIreadRegister(CC1101_REG_VERSION));
 }
 
 int16_t CC1101::config() {
