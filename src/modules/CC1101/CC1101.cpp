@@ -149,7 +149,7 @@ int16_t CC1101::receive(uint8_t* data, size_t len) {
   uint32_t start = Module::micros();  
   while(!Module::digitalRead(_mod->getIrq())) {
     Module::yield();
-	  
+    
     if(Module::micros() - start > timeout) {
       // flush Rx FIFO
       SPIsendCommand(CC1101_CMD_FLUSH_RX);
@@ -393,6 +393,9 @@ int16_t CC1101::setBitRate(float br) {
   // set bit rate value
   int16_t state = SPIsetRegValue(CC1101_REG_MDMCFG4, e, 3, 0);
   state |= SPIsetRegValue(CC1101_REG_MDMCFG3, m);
+  if(state == ERR_NONE) {
+    CC1101::_br = br;
+  }
   return(state);
 }
 
@@ -835,23 +838,23 @@ void CC1101::getExpMant(float target, uint16_t mantOffset, uint8_t divExp, uint8
   // iterate over possible exponent values
   for(int8_t e = expMax; e >= 0; e--) {
     // get table column start value (exp = e, mant = 0);
-	  float intervalStart = ((uint32_t)1 << e) * origin;
+    float intervalStart = ((uint32_t)1 << e) * origin;
 
     // check if target value is in this column
-	  if(target >= intervalStart) {
+    if(target >= intervalStart) {
       // save exponent value
       exp = e;
 
       // calculate size of step between table rows
-	    float stepSize = intervalStart/(float)mantOffset;
+      float stepSize = intervalStart/(float)mantOffset;
 
       // get target point position (exp = e, mant = m)
-	    mant = ((target - intervalStart) / stepSize);
+      mant = ((target - intervalStart) / stepSize);
 
       // we only need the first match, terminate
-	    return;
-	  }
-	}
+      return;
+    }
+  }
 }
 
 int16_t CC1101::setPacketMode(uint8_t mode, uint8_t len) {
