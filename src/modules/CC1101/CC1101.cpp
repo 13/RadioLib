@@ -122,7 +122,7 @@ int16_t CC1101::transmit(uint8_t* data, size_t len, uint8_t addr) {
     if(Module::micros() - start > timeout) {
       standby();
       clearIRQFlags();
-      return(ERR_TX_TIMEOUT);
+      return(-910);
     }
   }
 
@@ -162,7 +162,7 @@ int16_t CC1101::receive(uint8_t* data, size_t len) {
     if(Module::micros() - start > timeout) {
       standby();
       clearIRQFlags();
-      return(ERR_RX_TIMEOUT);
+      return(-911);
     } 
   }
 
