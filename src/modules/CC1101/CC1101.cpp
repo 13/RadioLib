@@ -16,7 +16,8 @@ int16_t CC1101::begin(float freq, float br, float freqDev, float rxBw, int8_t po
   uint8_t i = 0;
   bool flagFound = false;
   while((i < 10) && !flagFound) {
-    int16_t version = getChipVersion();
+    uint8_t version = SPIreadRegister(CC1101_REG_VERSION);
+    //int16_t version = getChipVersion();
     if((version == CC1101_VERSION_CURRENT) || (version == CC1101_VERSION_LEGACY)) {
       flagFound = true;
     } else {
