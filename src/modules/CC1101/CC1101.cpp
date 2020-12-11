@@ -110,7 +110,8 @@ int16_t CC1101::transmit(uint8_t* data, size_t len, uint8_t addr) {
 
     if(Module::micros() - start > timeout) {
       standby();
-      clearIRQFlags();
+      // flush Tx FIFO
+      SPIsendCommand(CC1101_CMD_FLUSH_TX);
       return(ERR_TX_TIMEOUT);
     }
   }
@@ -121,16 +122,17 @@ int16_t CC1101::transmit(uint8_t* data, size_t len, uint8_t addr) {
 
     if(Module::micros() - start > timeout) {
       standby();
-      clearIRQFlags();
+      // flush Tx FIFO
+      SPIsendCommand(CC1101_CMD_FLUSH_TX);
       return(-910);
     }
   }
 
   // set mode to standby
-  standby();
+  //standby();
 
   // flush Tx FIFO
-  SPIsendCommand(CC1101_CMD_FLUSH_TX);
+  //SPIsendCommand(CC1101_CMD_FLUSH_TX);
 
   return(state);
 }
@@ -149,8 +151,12 @@ int16_t CC1101::receive(uint8_t* data, size_t len) {
     Module::yield();
 	  
     if(Module::micros() - start > timeout) {
+      // flush Rx FIFO
+      SPIsendCommand(CC1101_CMD_FLUSH_RX);
+      // clear internal flag so getPacketLength can return the new packet length
+      _packetLengthQueried = false;
+      // set mode to standby
       standby();
-      clearIRQFlags();
       return(ERR_RX_TIMEOUT);
     } 
   }
@@ -160,8 +166,12 @@ int16_t CC1101::receive(uint8_t* data, size_t len) {
     Module::yield();
 
     if(Module::micros() - start > timeout) {
+      // flush Rx FIFO
+      SPIsendCommand(CC1101_CMD_FLUSH_RX);
+      // clear internal flag so getPacketLength can return the new packet length
+      _packetLengthQueried = false;
+      // set mode to standby
       standby();
-      clearIRQFlags();
       return(-911);
     } 
   }
