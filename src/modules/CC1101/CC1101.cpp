@@ -118,10 +118,11 @@ int16_t CC1101::transmit(uint8_t* data, size_t len, uint8_t addr) {
   }
 
   // wait for transmission end or timeout
+  uint32_t start1 = Module::micros();
   while(Module::digitalRead(_mod->getIrq())) {
     Module::yield();
 
-    if(Module::micros() - start > timeout) {
+    if(Module::micros() - start1 > timeout) {
       standby();
       // flush Tx FIFO
       SPIsendCommand(CC1101_CMD_FLUSH_TX);
@@ -163,10 +164,11 @@ int16_t CC1101::receive(uint8_t* data, size_t len) {
   }
 
   // wait for packet end or timeout
+  uint32_t start1 = Module::micros();
   while(Module::digitalRead(_mod->getIrq())) {
     Module::yield();
 
-    if(Module::micros() - start > timeout) {
+    if(Module::micros() - start1 > timeout) {
       // flush Rx FIFO
       SPIsendCommand(CC1101_CMD_FLUSH_RX);
       // clear internal flag so getPacketLength can return the new packet length
