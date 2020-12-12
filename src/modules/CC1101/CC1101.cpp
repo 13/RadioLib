@@ -126,7 +126,7 @@ int16_t CC1101::transmit(uint8_t* data, size_t len, uint8_t addr) {
       standby();
       // flush Tx FIFO
       SPIsendCommand(CC1101_CMD_FLUSH_TX);
-      return(-910);
+      return(ERR_TX_TIMEOUT);
     }
   }
 
@@ -175,7 +175,7 @@ int16_t CC1101::receive(uint8_t* data, size_t len) {
       _packetLengthQueried = false;
       // set mode to standby
       standby();
-      return(-911);
+      return(ERR_RX_TIMEOUT);
     } 
   }
 
